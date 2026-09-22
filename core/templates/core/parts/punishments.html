@@ -1,0 +1,51 @@
+<div class="page">
+  <div class="note">Список наказаний для кола. <strong>Одобренные («в колесе») убрать нельзя</strong> — правило ООН; их можно лишь отправить в архив целиком. Предложенные можно добавить в кол одной кнопкой.</div>
+
+  {% for label, puns in groups %}
+  <div class="category static">{{ label|lower }} · {{ puns|length }}</div>
+  <div class="grid">
+    {% for p in puns %}
+    <div class="card pun-card" data-pun="{{ p.id }}" data-status="{{ p.status }}" data-title="{{ p.title }}" data-kind="{{ p.kind }}" data-ep="{{ p.episode_minutes }}" data-dur="{{ p.duration_minutes }}" data-seasons="{{ p.seasons_note }}" data-link="{{ p.link }}" data-desc="{{ p.description }}" data-weight="{{ p.weight }}">
+      <div class="card-head">
+        <span class="pun-emoji">{{ p.kind_emoji }}</span>
+        <strong class="pun-title">{% if p.link %}<a href="{{ p.link }}" target="_blank" rel="noopener">{{ p.title }}</a>{% else %}{{ p.title }}{% endif %}</strong>
+        <span class="chip {{ p.status }}">{{ p.get_status_display }}</span>
+        <span class="msg-tools edit-only">
+          <button class="icon-btn" data-act="edit-pun" title="Правка">✏️</button>
+          {% if p.status == 'proposed' %}
+          <button class="icon-btn" data-act="approve-pun" title="Добавить в кол (необратимо)">➕</button>
+          {% endif %}
+          <button class="icon-btn" data-act="delete-pun" title="{% if p.status == 'approved' %}В архив (убрать нельзя){% else %}Удалить{% endif %}">🗑</button>
+        </span>
+      </div>
+      <div class="card-body">
+        {% if p.description %}<div class="pun-desc">{{ p.description }}</div>{% endif %}
+        {% if p.seasons_note %}<div class="muted">🗓 {{ p.seasons_note }}</div>{% endif %}
+        <div class="muted">⚖️ нагрузка: <strong>{{ p.load_label }}</strong></div>
+        {% if p.status == 'approved' %}<div class="muted lock-note">🔒 в списке навсегда (ООН)</div>{% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="empty">В этой группе пусто.</div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+
+  <form class="quick-form stacked edit-only" id="form-pun">
+    <div class="row">
+      <select name="kind">
+        <option value="series">📺 сериал / аниме / дорама</option>
+        <option value="movie">🎬 фильм / мультфильм</option>
+        <option value="vn">🎮 визуальная новелла</option>
+      </select>
+      <input name="title" placeholder="название наказания" class="grow" required>
+      <input name="link" placeholder="ссылка (необязательно)">
+    </div>
+    <div class="row">
+      <input name="episode_minutes" class="only-series" type="number" min="1" max="85" placeholder="минут в серии (1–85)">
+      <input name="duration_minutes" class="only-movie hidden" type="number" min="1" placeholder="длительность, мин">
+      <input name="description" placeholder="описание" class="grow">
+      <button class="btn primary">+ предложить наказание</button>
+    </div>
+  </form>
+</div>

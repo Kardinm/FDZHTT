@@ -1,0 +1,16 @@
+{% load core_extras %}
+<article class="msg" data-post="{{ post.id }}" data-raw="{{ post.content }}">
+  <div class="msg-avatar avatar" style="background:{{ post.author.color|default:'#5865f2' }}">{{ post.author.emoji|default:'👤' }}</div>
+  <div class="msg-body">
+    <div class="msg-meta">
+      <span class="msg-author">{{ post.author.name|default:'автор' }}</span>
+      <time>{{ post.created_at|date:"H:i · d.m.Y" }}{% if post.updated_at and not post.created_at == post.updated_at %} <span title="изменено">(изм.)</span>{% endif %}</time>
+      {% if post.pinned %}<span class="pin-chip">📌</span>{% endif %}
+      <span class="msg-tools edit-only">
+        <button class="icon-btn" data-act="edit-post" title="Быстрая правка">✏️</button>
+        <button class="icon-btn" data-act="delete-post" title="Удалить">🗑</button>
+      </span>
+    </div>
+    <div class="msg-content">{{ post.content|mdlite }}</div>
+  </div>
+</article>

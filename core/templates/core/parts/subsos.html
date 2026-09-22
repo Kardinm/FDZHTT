@@ -1,0 +1,27 @@
+{% load core_extras %}
+<div class="page">
+  <div class="note"><strong>Подсос</strong> — подсостояние ДОПОЛНИТЕЛЬНОГО сос. Когда оно включается, выбирается ровно <strong>один</strong> подсос из списка. Новые можно добавлять и выбирать в будущем.</div>
+  <div class="grid">
+    {% for p in podsos_list %}
+    <div class="card podsos-card {% if not p.active %}dim{% endif %}" data-pid="{{ p.id }}" data-title="{{ p.title }}" data-def="{{ p.description }}">
+      <div class="card-head">
+        <strong>🎲 {{ p.title }}</strong>
+        <span class="chip {% if p.active %}ok{% else %}off{% endif %}">{% if p.active %}доступен{% else %}скрыт{% endif %}</span>
+        <span class="msg-tools edit-only">
+          <button class="icon-btn" data-act="toggle-podsos" title="Вкл/выкл">👁</button>
+          <button class="icon-btn" data-act="edit-podsos" title="Правка">✏️</button>
+          <button class="icon-btn" data-act="delete-podsos" title="Удалить">🗑</button>
+        </span>
+      </div>
+      <div class="card-body">{{ p.description|mdlite }}</div>
+    </div>
+    {% empty %}
+    <div class="empty">Подсосов пока нет.</div>
+    {% endfor %}
+  </div>
+  <form class="quick-form edit-only" id="form-podsos">
+    <input name="title" placeholder="название подсоса" required>
+    <input name="description" placeholder="описание" class="grow">
+    <button class="btn primary">+ подсос</button>
+  </form>
+</div>

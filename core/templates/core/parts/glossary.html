@@ -1,0 +1,27 @@
+{% load core_extras %}
+<div class="page">
+  <div class="note">Список определений. В текстах правил термины обозначены <span class="term-chip">подобно этому</span> — наведи, чтобы увидеть определение. [[ос]] в исходнике правил превращается в такой чип.</div>
+  <div class="grid">
+    {% for t in term_list %}
+    <div class="card term-card" data-term-id="{{ t.id }}" data-short="{{ t.short }}" data-title="{{ t.title }}" data-def="{{ t.definition }}">
+      <div class="card-head">
+        <code class="term-short">{{ t.short }}</code>
+        <strong>{{ t.title }}</strong>
+        <span class="msg-tools edit-only">
+          <button class="icon-btn" data-act="edit-term" title="Правка">✏️</button>
+          <button class="icon-btn" data-act="delete-term" title="Удалить">🗑</button>
+        </span>
+      </div>
+      <div class="card-body">{{ t.definition|mdlite }}</div>
+    </div>
+    {% empty %}
+    <div class="empty">Определений пока нет.</div>
+    {% endfor %}
+  </div>
+  <form class="quick-form edit-only" id="form-term">
+    <input name="short" placeholder="коротко (ос)" required>
+    <input name="title" placeholder="полное название" required>
+    <input name="definition" placeholder="определение" class="grow">
+    <button class="btn primary">+ термин</button>
+  </form>
+</div>
