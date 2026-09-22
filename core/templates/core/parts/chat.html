@@ -1,0 +1,7 @@
+<div class="msgs">
+  {% for post in posts %}
+    {% include "core/parts/post.html" %}
+  {% empty %}
+  <div class="empty">Пусто. Ниже можно написать первое сообщение.</div>
+  {% endfor %}
+</div>

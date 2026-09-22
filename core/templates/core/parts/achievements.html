@@ -1,0 +1,26 @@
+<div class="page">
+  <div class="note">Достижения выдаются автоматически, когда наказание <strong>достигнуто</strong> (полностью отработано).</div>
+
+  <div class="grid achievements">
+    {% for a in achievement_list %}
+    <div class="card ach-card unlocked">
+      <div class="ach-icon">{{ a.icon }}</div>
+      <strong>{{ a.title }}</strong>
+      <div class="muted">{{ a.description }}</div>
+      <div class="muted small">получено {{ a.unlocked_at|date:"d.m.Y" }}
+        {% if a.sentence %}· мероприятие от {{ a.sentence.session.date|date:"d.m.Y" }}{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+    {% for p in locked %}
+    <div class="card ach-card locked">
+      <div class="ach-icon">🔒</div>
+      <strong>{{ p.title }}</strong>
+      <div class="muted small">ещё не отработано</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% if not achievement_list and not locked %}
+  <div class="empty">Пока ни одного наказания не достигнуто.</div>
+  {% endif %}
+</div>

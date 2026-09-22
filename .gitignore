@@ -216,3 +216,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Секретный ключ Django (генерируется локально)
+.django-secret
+# База данных
+*.sqlite3
+
+# Шаблоны сайта (не путать с артефактами сборки)
+!core/templates/core/parts/

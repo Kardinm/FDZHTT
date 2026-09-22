@@ -1,0 +1,96 @@
+{% load core_extras %}
+<div class="page">
+  <!-- калькулятор -->
+  <div class="card calc" id="calc">
+    <div class="card-head"><strong>🧮 Калькулятор пятницы</strong><span class="muted">формулы прямо из правил</span></div>
+    <div class="card-body row wrap">
+      <label>тиктоков (т) <input id="calc-t" type="number" min="0" value="240"></label>
+      <label>смехов (ос) <input id="calc-os" type="number" min="0" value="9"></label>
+      <div class="calc-out" id="calc-out"></div>
+    </div>
+  </div>
+
+  <form class="quick-form edit-only row wrap" id="form-session">
+    <input name="date" type="date" title="дата">
+    <input name="tiktoks" type="number" min="0" placeholder="т" style="width:70px">
+    <input name="laughs" type="number" min="0" placeholder="ос" style="width:70px">
+    <input name="title" placeholder="название (необязательно)" class="grow">
+    <button class="btn primary">+ мероприятие</button>
+  </form>
+
+  {% for s in sessions %}
+  <div class="card session" data-sid="{{ s.id }}" data-title="{{ s.title }}" data-notes="{{ s.notes }}">
+    <div class="card-head">
+      <strong>📅 {{ s }}</strong>
+      <span class="chip blurple">оп: <b class="js-op">{{ s.fail_points }}</b></span>
+      <span class="msg-tools edit-only">
+        <button class="icon-btn" data-act="edit-session" title="Заметка / название">✏️</button>
+        <button class="icon-btn" data-act="delete-session" title="Удалить мероприятие">🗑</button>
+      </span>
+    </div>
+    <div class="card-body">
+      <div class="row wrap counters">
+        <div class="counter" data-field="tiktoks">
+          <span class="muted">т</span>
+          <button class="icon-btn step" data-delta="-10">−</button>
+          <b class="val">{{ s.tiktoks }}</b>
+          <button class="icon-btn step" data-delta="1">+</button>
+          <button class="icon-btn step" data-delta="10">+10</button>
+        </div>
+        <div class="counter" data-field="laughs">
+          <span class="muted">ос</span>
+          <button class="icon-btn step" data-delta="-1">−</button>
+          <b class="val">{{ s.laughs }}</b>
+          <button class="icon-btn step" data-delta="1">+</button>
+        </div>
+        <div class="chips">
+          <span class="chip">нужно <b class="js-need">{{ s.required_laughs_per_point }}</b> ос / 1 оп</span>
+          {% if s.needs_extra %}
+          <span class="chip warn">+ ДОПОЛНИТЕЛЬНОЕ сос!</span>
+          <select class="podsos-pick edit-only" data-sid="{{ s.id }}">
+            <option value="">— выбрать подсос —</option>
+            {% for p in podsos_list %}
+            <option value="{{ p.id }}" {% if s.extra_podsos_id == p.id %}selected{% endif %}>{{ p.title }}</option>
+            {% endfor %}
+          </select>
+          {% endif %}
+          {% if s.needs_split %}<span class="chip danger">больше 700 — делить пополам!</span>{% endif %}
+        </div>
+      </div>
+      {% if s.notes %}<div class="muted notes">📝 {{ s.notes }}</div>{% endif %}
+
+      <div class="category static">колы (отработки)</div>
+      {% for x in s.sentences.all %}
+      <div class="sentence" data-xid="{{ x.id }}" data-status="{{ x.status }}" data-watched="{{ x.watched_units }}">
+        <div class="row">
+          <span>{{ x.punishment.kind_emoji }}</span>
+          <strong class="grow">{{ x.punishment.title }}</strong>
+          <span class="muted units">{{ x.watched_units }}/{{ x.planned_units }} {{ x.unit_name }}</span>
+          <span class="chip {{ x.status }}">{{ x.get_status_display }}</span>
+          <span class="msg-tools edit-only">
+            <button class="icon-btn step-x" data-delta="-1" title="минус единица">−</button>
+            <button class="icon-btn step-x" data-delta="1" title="плюс единица">+</button>
+            {% if x.status != 'done' %}<button class="icon-btn" data-act="done-x" title="Отработано — выдать достижение">✅</button>{% endif %}
+            <button class="icon-btn" data-act="delete-x" title="Удалить">🗑</button>
+          </span>
+        </div>
+        <div class="bar"><div class="bar-fill" style="width:{{ x.progress_percent }}%"></div></div>
+      </div>
+      {% empty %}
+      <div class="empty small">Колов пока нет — покрути <a href="{% url 'channel' 'wheel' %}">колесо</a> или добавь отработку ручками ниже.</div>
+      {% endfor %}
+      <form class="quick-form row edit-only" id="form-sentence-{{ s.id }}" data-sid="{{ s.id }}">
+        <select name="punishment" class="grow">
+          {% for p in all_puns %}
+          <option value="{{ p.id }}">{{ p.kind_emoji }} {{ p.title }} — {{ p.load_label }}</option>
+          {% endfor %}
+        </select>
+        <input name="spins" type="number" min="1" value="1" style="width:60px" title="колов">
+        <button class="btn">+ кол вручную</button>
+      </form>
+    </div>
+  </div>
+  {% empty %}
+  <div class="empty">Мероприятий пока нет — создай первое формой выше.</div>
+  {% endfor %}
+</div>

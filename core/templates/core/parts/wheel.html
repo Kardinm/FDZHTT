@@ -1,0 +1,32 @@
+<div class="page wheel-page">
+  <div class="note">Колесо наказаний: ровно столько колов, сколько набрано <span class="term-chip" data-term="оп">оп</span>. Визуальные новеллы выпадают реже (малый шанс). Одно кручение = одна отработка в выбранное мероприятие.</div>
+
+  <div class="wheel-wrap">
+    <div class="wheel-box">
+      <canvas id="wheel" width="360" height="360" {% if not wheel_pool %}data-empty="1"{% endif %}></canvas>
+      <div class="wheel-needle">🔻</div>
+      <button id="spin-btn" class="btn primary big edit-only">Крутить!</button>
+    </div>
+    <div class="wheel-side">
+      <div class="card">
+        <div class="card-head"><strong>Куда записать кол</strong></div>
+        <div class="card-body">
+          <select id="wheel-session">
+            {% for s in sessions %}
+            <option value="{{ s.id }}">{{ s }} · оп: {{ s.fail_points }}</option>
+            {% endfor %}
+          </select>
+          {% if not sessions %}
+          <div class="muted">Сначала создай мероприятие в <a href="{% url 'channel' 'progress' %}">#прогресс</a>.</div>
+          {% endif %}
+          <label class="check"><input type="checkbox" id="wheel-spins2"> двойной кол (2 оп сразу)</label>
+        </div>
+      </div>
+      <div class="card" id="wheel-result">
+        <div class="card-head"><strong>Выпало</strong></div>
+        <div class="card-body muted" id="wheel-result-body">Пока не крутили.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="application/json" id="wheel-data">{{ wheel_json|safe }}</script>
